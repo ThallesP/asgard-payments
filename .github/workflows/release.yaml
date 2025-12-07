@@ -39,6 +39,11 @@ jobs:
       - name: Build and publish Docker images
         run: bun run release:docker
 
+      - name: Save Kubeconfig
+        run: echo $KUBECONFIG > ~/.kube/config
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
       - name: Push Infra
         run: cd apps/infra && pulumi up --yes
         env:
