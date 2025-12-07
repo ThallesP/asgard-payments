@@ -1,10 +1,11 @@
-import k8s from "@pulumi/kubernetes";
+import * as k8s from "@pulumi/kubernetes";
+import * as pulumi from "@pulumi/pulumi";
 
 export type CreateAppInput = {
   name: string;
   image: string;
   domain: string;
-  namespace: string;
+  namespace: pulumi.Input<string>;
   replicas: number;
 };
 
@@ -45,10 +46,33 @@ export function createApp({
     },
   });
 
+  const service = new k8s.core.v1.Service(`${name}-service`, {
+    metadata: {
+      name: `${name}-service`,
+      namespace,
+    },
+    spec: {
+      selector: {
+        app: `${name}-pod`,
+      },
+      ports: [
+        {
+          port: 80,
+          targetPort: 3000,
+        },
+      ],
+    },
+  });
+
   const ingress = new k8s.networking.v1.Ingress(`${name}-ingress`, {
+    apiVersion: "networking.k8s.io/v1",
+    kind: "Ingress",
     metadata: {
       name: `${name}-ingress`,
       namespace,
+      annotations: {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+      },
     },
     spec: {
       rules: [
@@ -57,8 +81,8 @@ export function createApp({
           http: {
             paths: [
               {
-                path: "/",
                 pathType: "Prefix",
+                path: "/",
                 backend: {
                   service: {
                     name: `${name}-service`,
@@ -75,5 +99,5 @@ export function createApp({
     },
   });
 
-  return { deployment, ingress };
+  return { deployment, ingress, service };
 }
