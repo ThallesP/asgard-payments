@@ -40,7 +40,7 @@ jobs:
         run: bun run release:docker
 
       - name: Save Kubeconfig
-        run: echo $KUBECONFIG > ~/.kube/config
+        run: mkdir -p ~/.kube && echo $KUBECONFIG > ~/.kube/config
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
