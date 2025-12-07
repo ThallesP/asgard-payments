@@ -3,7 +3,7 @@
   "version": "1.0.50",
   "scripts": {
     "start": "bun run src/index.ts",
-    "release:docker": "docker build -t asgard-payments -f Dockerfile ../../ && docker tag asgard-payments ghcr.io/thallesp/asgard-payments:latest && docker push ghcr.io/thallesp/asgard-payments:latest"
+    "release:docker": "docker build -t asgard-payments -f Dockerfile ../../ && docker tag asgard-payments ghcr.io/thallesp/asgard-payments:${IMAGE_TAG:-latest} && docker push ghcr.io/thallesp/asgard-payments:${IMAGE_TAG:-latest}"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.8",
