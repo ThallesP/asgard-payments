@@ -7,6 +7,8 @@ export type CreateAppInput = {
   domain: string;
   namespace: pulumi.Input<string>;
   replicas: number;
+  variables?: k8s.types.input.core.v1.EnvVar[];
+  secretName?: pulumi.Input<string>;
 };
 
 export function createApp({
@@ -15,7 +17,19 @@ export function createApp({
   domain,
   image,
   namespace,
+  variables = [],
+  secretName,
 }: CreateAppInput) {
+  const envFrom: k8s.types.input.core.v1.EnvFromSource[] = [];
+
+  if (secretName) {
+    envFrom.push({
+      secretRef: {
+        name: secretName,
+      },
+    });
+  }
+
   const deployment = new k8s.apps.v1.Deployment(name, {
     metadata: {
       name: `${name}-deployment`,
@@ -39,6 +53,8 @@ export function createApp({
             {
               image,
               name: `${name}-container`,
+              env: variables.length > 0 ? variables : undefined,
+              envFrom: envFrom.length > 0 ? envFrom : undefined,
             },
           ],
         },

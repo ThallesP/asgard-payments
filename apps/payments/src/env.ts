@@ -4,6 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
+    LEDGER_DATABASE_URL: z.string(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
