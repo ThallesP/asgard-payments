@@ -42,7 +42,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
 
       - name: Save Kubeconfig
-        run: mkdir -p ~/.kube && echo $KUBECONFIG > ~/.kube/config
+        run: mkdir -p ~/.kube && echo $KUBECONFIG | base64 -d > ~/.kube/config
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
