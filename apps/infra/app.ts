@@ -6,6 +6,7 @@ export type CreateAppInput = {
   image: string;
   domain: string;
   namespace: pulumi.Input<string>;
+  initCommand?: string[];
   replicas: number;
   variables?: k8s.types.input.core.v1.EnvVar[];
   secretName?: pulumi.Input<string>;
@@ -14,6 +15,7 @@ export type CreateAppInput = {
 export function createApp({
   name,
   replicas,
+  initCommand,
   domain,
   image,
   namespace,
@@ -49,6 +51,15 @@ export function createApp({
           },
         },
         spec: {
+          initContainers: initCommand
+            ? [
+                {
+                  name: `${name}-init`,
+                  image,
+                  command: initCommand,
+                },
+              ]
+            : [],
           containers: [
             {
               image,

@@ -21,4 +21,4 @@ COPY --from=prepare /app/apps/payments/package.json ./
 ENV NODE_ENV=production
 
 USER bun
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "run", "start"]
