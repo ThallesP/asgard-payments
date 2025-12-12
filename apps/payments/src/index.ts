@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { ledger } from "./lib/db";
 import { type GatewayProps, Gateway } from "./entities/Gateway";
 import { fromTypes, openapi } from "@elysiajs/openapi";
-import path from "node:path";
+import z from "zod";
 
 export const app = new Elysia()
   .use(
