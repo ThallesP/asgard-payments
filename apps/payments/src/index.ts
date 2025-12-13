@@ -1,17 +1,23 @@
 import { Elysia } from "elysia";
-import { ledger } from "./lib/db";
-import { type GatewayProps, Gateway } from "./entities/Gateway";
+import { db, ledger } from "./lib/db";
 import { fromTypes, openapi } from "@elysiajs/openapi";
-import z from "zod";
+
+import { Rail } from "./entities/Rail";
+
+export type Simplify<T> = {
+  [K in keyof T]: T[K];
+} & {};
 
 export const app = new Elysia()
   .use(
     openapi({
-      references: fromTypes(),
+      references: fromTypes("src/index.ts", {
+        silent: true,
+      }),
     }),
   )
-  .get("/gateways", async () => {
-    return [new Gateway({ id: "1" })]; // can't even detect classes, damn
+  .get("/rails", async (): Promise<Simplify<Rail>> => {
+    return new Rail({ id: "123" });
   })
   .listen(3000);
 
