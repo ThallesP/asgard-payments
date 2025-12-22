@@ -1,6 +1,7 @@
 import * as k8s from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import * as planetscale from "@pulumi/planetscale";
 import { createApp } from "./app";
 import { createDatabase } from "./database";
 

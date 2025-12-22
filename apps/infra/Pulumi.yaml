@@ -3,8 +3,14 @@ description: A minimal Kubernetes TypeScript Pulumi program
 runtime:
   name: nodejs
   options:
-    packagemanager: auto
+    packagemanager: bun
 config:
   pulumi:tags:
     value:
       pulumi:template: kubernetes-typescript
+packages:
+  planetscale:
+    source: terraform-provider
+    version: 0.12.0
+    parameters:
+      - planetscale/planetscale
