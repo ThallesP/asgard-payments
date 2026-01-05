@@ -5,6 +5,7 @@ import { Rail, rails } from "./lib/db/schema";
 
 import z from "zod";
 import { upid } from "upid-ts";
+import { PathFactory } from "./lib/paths/PathFactory";
 
 export type Simplify<T> = {
   [K in keyof T]: T[K];
@@ -20,24 +21,27 @@ export const app = new Elysia()
   )
   .post(
     "/rails",
-    async ({ body: { source } }): Promise<Simplify<Rail>> => {
-      const rail = await db
-        .insert(rails)
-        .values({
-          id: upid("rail").toStr(),
-          source,
-        })
-        .returning();
+    async ({ body: { source } }): Promise<unknown> => {
+      const pathFactory = PathFactory.getInstance();
 
-      return rail[0];
+      const sourcePath = pathFactory.get(source.type).createSource();
+
+      // const rail = await db
+      //   .insert(rails)
+      //   .values({
+      //     id: upid("rail").toStr(),
+      //     source,
+      //     destination,
+      //   })
+      //   .returning();
+
+      return sourcePath;
     },
     {
       body: z.object({
         source: z.discriminatedUnion("type", [
           z.object({
             type: z.literal("PIX"),
-            key: z.string(),
-            kind: z.enum(["CPF", "CNPJ", "RANDOM", "EMAIL", "PHONE_NUMBER"]),
           }),
         ]),
         destination: z.discriminatedUnion("type", [
